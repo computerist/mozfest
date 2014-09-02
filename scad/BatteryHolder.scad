@@ -1,7 +1,7 @@
 include<hexnut.scad>;
 
 width=84;
-length=114;
+length=124;
 height=30;
 
 module post() {
@@ -29,7 +29,7 @@ module body(end_block) {
       }
       translate([-width/2,-length/2,0]) cube([width,length,30]);
     }
-    translate([0,0,1]) scale(v = [1,1.03]) linear_extrude(layer = "Layer 1",
+    translate([0,-5,1]) scale(v = [1,1.03]) linear_extrude(layer = "Layer 1",
         height = 30, convexity = 10) {
       import(file = "Battery_shape.dxf");
     }
@@ -37,7 +37,7 @@ module body(end_block) {
 }
 
 module holder() {
-  screws = [[(-width/2)-5,15],[(width/2)+5,15],[(-width/2)-5,-15],[(width/2)+5,-15],[(-width/2)-5,45],[(width/2)+5,45],[(-width/2)-5,-45],[(width/2)+5,-45]];
+  screws = [[(-width/2)-5,20],[(width/2)+5,20],[(-width/2)-5,-10],[(width/2)+5,-10],[(-width/2)-5,50],[(width/2)+5,50],[(-width/2)-5,-40],[(width/2)+5,-40]];
   difference() {
     union() {
       body(10);
@@ -55,6 +55,7 @@ module holder() {
       for(screw=screws) {
         translate([screw[0],screw[1],(height/2)+5]) hole();
       }
+      translate([0,+length/2,2]) cylinder(r=6.5/2, h=height);
     }
   }
 }
