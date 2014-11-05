@@ -14,12 +14,12 @@ module profile(face=30, cutout=8, sides=12, height=11, wall=2){
     intersection() {
       union() {
         cylinder(r=o-10,h=height);
-        for(angle=[0:(360/sides):360-(360/sides)]){
+        for (angle=[0:(360/sides):360-(360/sides)]){
           rotate(angle,[0,0,1]){
             translate([0,o,0]) toothcurve(edge=face, height=height, cutout=cutout);
           }
         }
-        for(angle=[0:(360/sides):360-(360/sides)]){
+        for (angle=[0:(360/sides):360-(360/sides)]){
           linear_extrude(height=height) {
             rotate(angle,[0,0,1]){
               polygon(points=[[0,0],[-face/2,-o],[-face/2,-(o+cutout/2)],[face/2,-(o+cutout/2)],[face/2,-o]], paths=[[0,1,4]]);
@@ -30,7 +30,7 @@ module profile(face=30, cutout=8, sides=12, height=11, wall=2){
       union() {
         cylinder(r=o+(cutout/2),h=height,$fn=100);
         // replace cylinder above with polygons below if tracks aren't open
-        //for(angle=[0:(360/sides):360-(360/sides)]){
+        //for (angle=[0:(360/sides):360-(360/sides)]){
         //  linear_extrude(height=2) {
         //    rotate(angle,[0,0,1]){
         //      polygon(points=[[0,0],[-width/2,-o],[-width/2,-(o+cutout/2)],[width/2,-(o+cutout/2)],[width/2,-o]], paths=[[0,1,2,3,4]]);
@@ -40,7 +40,7 @@ module profile(face=30, cutout=8, sides=12, height=11, wall=2){
       }
     }
     union() {
-      for(angle=[0:(360/sides):360-(360/sides)]){
+      for (angle=[0:(360/sides):360-(360/sides)]){
         rotate(angle,[0,0,1]){
           translate([face/2,o,0]) cylinder(r=cutout/2,h=height);
         }
@@ -76,7 +76,7 @@ module centre(face=30, cutout=8, sides=12, height=11, wall=2, motorshaft, nuthei
 
 module body(face=30, sides=12, motorshaft, nutheight, height) {
   o = (face/2) * tan((180-(360/sides))/2);
-  for(angle=[45:90:315]) {
+  for (angle=[45:90:315]) {
     rotate(angle,[0,0,1])
         translate([-2.5,(motorshaft/2)+3+nutheight+3,0])
         cube([5,o-((motorshaft/2)+3+nutheight+5),height]);
@@ -84,13 +84,20 @@ module body(face=30, sides=12, motorshaft, nutheight, height) {
 }
 
 module gear(face=30, cutout=8, sides=12, height=11, wall=2, motorshaft=5.5, nutheight=4) {
-  union(){
-    profile(face=face, cutout=cutout, sides=sides, height=height, wall=2);
-    centre(face=face, cutout=cutout, sides=sides, height=height, wall=2, motorshaft=motorshaft, nutheight=nutheight);
+  difference() {
+    union(){
+      profile(face=face, cutout=cutout, sides=sides, height=height, wall=2);
+      centre(face=face, cutout=cutout, sides=sides, height=height, wall=2, motorshaft=motorshaft, nutheight=nutheight);
+      body(face=face, sides=sides, motorshaft=motorshaft, nutheight=nutheight, height=height);
+    }
+    translate([0, face/2, height/2]) {
+      rotate(270,[1,0,0]){
+        cylinder(r=5/2, h=200);
+      }
+    }
   }
-  body(face=face, sides=sides, motorshaft=motorshaft, nutheight=nutheight, height=height);
 }
 
 //toothcurve();
 
-gear();
+gear(sides=12);
